@@ -21,8 +21,9 @@ export default class App extends Component {
 
   handleAdd(text) {
     const tasks = this.state.tasks.slice();
+    const lastTodo = tasks[tasks.length - 1];
     tasks.push({
-      id: 7,
+      id: lastTodo.id + 1,
       text,
       completed: false,
     });
@@ -50,16 +51,28 @@ export default class App extends Component {
     this.setState({ tasks });
   }
 
+  handleFilter = event => {
+    this.setState({ showCompleted: event.target.checked });
+  };
+
   render() {
+    const filteredTasks = this.state.tasks.filter(task => {
+      return this.state.showCompleted || !task.completed;
+    });
     return (
       <div>
         <h1>ToDo:</h1>
 
         <label>
-          View Completed <input type="checkbox" checked={false} />
+          Include Completed{' '}
+          <input
+            type="checkbox"
+            checked={this.state.showCompleted}
+            onChange={this.handleFilter}
+          />
         </label>
         <TaskList
-          tasks={this.state.tasks}
+          tasks={filteredTasks}
           showCompleted={this.state.showCompleted}
           onChange={this.handleChange}
           onDelete={this.handleDelete}
